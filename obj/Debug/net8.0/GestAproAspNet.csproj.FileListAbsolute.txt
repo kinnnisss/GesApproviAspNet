@@ -408,3 +408,4 @@ C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\Nouveau dossier\Devoir_Csharp_sem1\Gest
 C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\Nouveau dossier\Devoir_Csharp_sem1\GestAproAspNet\obj\Debug\net8.0\GestAproAspNet.pdb
 C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\Nouveau dossier\Devoir_Csharp_sem1\GestAproAspNet\obj\Debug\net8.0\GestAproAspNet.genruntimeconfig.cache
 C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\Nouveau dossier\Devoir_Csharp_sem1\GestAproAspNet\obj\Debug\net8.0\ref\GestAproAspNet.dll
+C:\Users\oper\Desktop\L3_GLRS_COURS\SEM1\Nouveau dossier\Devoir_Csharp_sem1\GestAproAspNet\obj\Debug\net8.0\GestAproAspNet.sourcelink.json
