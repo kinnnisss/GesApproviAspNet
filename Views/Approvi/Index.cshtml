@@ -1,0 +1,120 @@
+@using GestAproAspNet.Models
+@model IEnumerable<Approvi>
+
+@{
+    ViewData["Title"] = "Gestion des approvisionnements";
+    var currentSearch = ViewContext.HttpContext.Request.Query["search"].ToString();
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Gestion des approvisionnements</h2>
+        <a class="btn btn-primary" asp-controller="Approvi" asp-action="Create">
+            Nouvel approvisionnement
+        </a>
+    </div>
+
+    
+    <div class="card mb-3">
+        <div class="card-body">
+            <form asp-action="Index"
+                  asp-controller="Approvi"
+                  method="get"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+                    <label class="form-label" for="search">Rechercher</label>
+                    <input type="text"
+                           id="search"
+                           name="search"
+                           value="@currentSearch"
+                           class="form-control"
+                           placeholder="Référence, fournisseur..." />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label d-block">&nbsp;</label>
+                    <button type="submit" class="btn btn-outline-primary">
+                        Rechercher
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+  
+    <div class="card">
+        <div class="card-header">
+            <strong>Liste des approvisionnements</strong>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date</th>
+                        <th>Fournisseur</th>
+                        <th>Montant total</th>
+                        <th>Statut</th>
+                        <th>Articles</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var approvi in Model)
+                    {
+                        <tr>
+                            <td>@approvi.Reference</td>
+                            <td>@approvi.DateApprovi.ToString("dd/MM/yyyy")</td>
+                            <td>@approvi.Fournisseur?.Nom</td>
+                            <td>@approvi.TotalAmount.ToString("N0") FCFA</td>
+                            <td>
+                                @switch (approvi.Statut)
+                                {
+                                    case StatutApprovi.Recu:
+                                        <span class="badge bg-success">Reçu</span>
+                                        break;
+                                    case StatutApprovi.EnAttente:
+                                        <span class="badge bg-warning text-dark">En attente</span>
+                                        break;
+                                    case StatutApprovi.Annule:
+                                        <span class="badge bg-danger">Annulé</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (approvi.Transactions != null && approvi.Transactions.Any())
+                                {
+                                    <span>@approvi.Transactions.Count article(s)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Aucun</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-secondary" disabled>
+                                    Détails
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            Aucun approvisionnement trouvé.
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

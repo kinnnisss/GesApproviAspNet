@@ -1,0 +1,193 @@
+@using GestAproAspNet.Models
+@model ApproviCreateViewModel
+
+@{
+    ViewData["Title"] = "Nouvel approvisionnement";
+    var fournisseurs = ViewBag.Fournisseurs as List<Fournisseur>;
+    var articles = ViewBag.Articles as List<Article>;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Nouvel approvisionnement</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+
+    @using (Html.BeginForm("Create", "Approvi", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <!-- Bloc informations approvisionnement -->
+            <div class="col-lg-5 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <strong>Informations de l'approvisionnement</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Approvi.Reference" class="form-label">Référence</label>
+                            <input asp-for="Approvi.Reference" class="form-control" />
+                            <span asp-validation-for="Approvi.Reference" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Approvi.DateApprovi" class="form-label">Date</label>
+                            <input asp-for="Approvi.DateApprovi" type="date" class="form-control" />
+                            <span asp-validation-for="Approvi.DateApprovi" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Fournisseur</label>
+                            <select asp-for="Approvi.FournisseurId" class="form-select">
+                                <option value="">-- Sélectionner un fournisseur --</option>
+                                @if (fournisseurs != null)
+                                {
+                                    foreach (var f in fournisseurs)
+                                    {
+                                        <option value="@f.Id">
+                                            @f.Nom
+                                        </option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Approvi.FournisseurId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Approvi.Statut" class="form-label">Statut</label>
+                            <select asp-for="Approvi.Statut" class="form-select">
+                                <option value="@StatutApprovi.EnAttente">En attente</option>
+                                <option value="@StatutApprovi.Recu">Reçu</option>
+                                <option value="@StatutApprovi.Annule">Annulé</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Approvi.Observations" class="form-label">Observations</label>
+                            <textarea asp-for="Approvi.Observations" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc détail articles -->
+            <div class="col-lg-7 mb-3">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <strong>Détails de l'approvisionnement</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label">Article</label>
+                                <select asp-for="ArticleId" class="form-select">
+                                    <option value="">-- Sélectionner un article --</option>
+                                    @if (articles != null)
+                                    {
+                                        foreach (var a in articles)
+                                        {
+                                            <option value="@a.Id">
+                                                @a.Libelle
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ArticleId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label asp-for="Quantity" class="form-label">Quantité</label>
+                                <input asp-for="Quantity" class="form-control" />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="UnitPrice" class="form-label">Prix unitaire</label>
+                                <input asp-for="UnitPrice" class="form-control" />
+                                <span asp-validation-for="UnitPrice" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-plus-circle"></i> Enregistrer l'article et l'approvisionnement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>Articles ajoutés</strong>
+                        <span class="text-muted small">Simplifié (1 article pour ce devoir)</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Article</th>
+                                    <th class="text-end">Quantité</th>
+                                    <th class="text-end">Prix unitaire</th>
+                                    <th class="text-end">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ArticleId != 0 && Model.Quantity > 0 && Model.UnitPrice > 0)
+                                {
+                                    var article = articles?.FirstOrDefault(a => a.Id == Model.ArticleId);
+                                    var montant = Model.Quantity * Model.UnitPrice;
+
+                                    <tr>
+                                        <td>@article?.Libelle</td>
+                                        <td class="text-end">@Model.Quantity</td>
+                                        <td class="text-end">@Model.UnitPrice.ToString("N0") FCFA</td>
+                                        <td class="text-end">@montant.ToString("N0") FCFA</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-3">
+                                            Aucun article ajouté pour le moment.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <th colspan="3" class="text-end">Total</th>
+                                    <th class="text-end">
+                                        @if (Model != null && Model.Quantity > 0 && Model.UnitPrice > 0)
+                                        {
+                                            @( (Model.Quantity * Model.UnitPrice).ToString("N0") ) @:FCFA
+                                        }
+                                        else
+                                        {
+                                            @:0 FCFA
+                                        }
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="mt-3 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Enregistrer l'approvisionnement
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
